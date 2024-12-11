@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">ProductShop</string>
+    <string name="products_shop">Products shop</string>
+    <string name="create_shop">Create shop</string>
+    <string name="enter_name">Enter name</string>
+    <string name="enter_price">Enter price</string>
+    <string name="save">Save</string>
+    <string name="error_loading_image">Error loading image</string>
+    <string name="image_is_required">Image is required</string>
+    <string name="enter_valid_price">Enter valid price</string>
+    <string name="name_is_required">Name is required</string>
+    <string name="select_image">Select image</string>
+    <string name="product_shop">Product shop</string>
+    <string name="exit">Exit</string>
+</resources>
