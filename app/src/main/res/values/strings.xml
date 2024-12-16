@@ -12,4 +12,6 @@
     <string name="select_image">Select image</string>
     <string name="product_shop">Product shop</string>
     <string name="exit">Exit</string>
+    <string name="description">Description</string>
+    <string name="description_is_required">Description is required</string>
 </resources>

@@ -19,12 +19,14 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.productshop.databinding.ActivityShopBinding
 import com.example.productshop.databinding.ListItemBinding
+import java.io.FileNotFoundException
 import java.io.IOException
+import java.io.InputStream
 
 class ShopActivity : AppCompatActivity() {
     private val products = mutableListOf<Product>()
     private lateinit var binding: ActivityShopBinding
-    private var bitmap: Bitmap? = null
+    private var bitmap: Uri? = null
     private lateinit var adapter: ArrayAdapter<Product>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +50,7 @@ class ShopActivity : AppCompatActivity() {
                 binding.apply {
                     val product = getItem(position)
                     product?.let {
-                        avatarIV.setImageBitmap(product.image)
+                        avatarIV.setImageURI(Uri.parse(product.image))
                         nameTV.text = product.name
                         priceTV.text = product.price.toString()
                     }
@@ -59,6 +61,12 @@ class ShopActivity : AppCompatActivity() {
         binding.apply {
             setSupportActionBar(toolbar)
             listLV.adapter = adapter
+            listLV.setOnItemClickListener { adapterView, view, position, id ->
+                val intent = Intent(this@ShopActivity, DetailsActivity::class.java).apply {
+                    putExtra(DetailsActivity.KEY_PRODUCT, adapterView.adapter.getItem(position) as Product)
+                }
+                startActivity(intent)
+            }
             avatarIV.setOnClickListener {
                 val intent = Intent(Intent.ACTION_PICK).apply { type = "image/*" }
                 startActivityForResult(Intent.createChooser(intent, getString(R.string.select_image)), REQUEST_CODE_GALLERY)
@@ -69,10 +77,16 @@ class ShopActivity : AppCompatActivity() {
                         makeToast(R.string.name_is_required)
                         return@setOnClickListener
                     }
+                    if (descET.text.isBlank()) {
+                        makeToast(R.string.description_is_required)
+                        return@setOnClickListener
+                    }
+
                     val product = Product(
                         nameET.text.toString(),
                         priceET.text.toString().toInt(),
-                        bitmap!!
+                        descET.text.toString(),
+                        bitmap!!.toString()
                     )
                     products.add(product)
                     adapter.notifyDataSetChanged()
@@ -89,8 +103,10 @@ class ShopActivity : AppCompatActivity() {
     fun clear() {
         binding.apply {
             avatarIV.setImageResource(R.drawable.avatar)
+            bitmap = null
             nameET.text.clear()
             priceET.text.clear()
+            descET.text.clear()
         }
     }
 
@@ -115,18 +131,18 @@ class ShopActivity : AppCompatActivity() {
         when(requestCode) {
             REQUEST_CODE_GALLERY -> if (resultCode == RESULT_OK) {
                 val selectedImage: Uri? = data?.data
+                var checkImageStream: InputStream? = null
                 try {
-                    bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedImage)
-                    binding.avatarIV.setImageBitmap(bitmap)
+                    checkImageStream = contentResolver.openInputStream(selectedImage ?: throw IOException()) ?: throw IOException()
+                    bitmap = selectedImage
+                    binding.avatarIV.setImageURI(bitmap)
                 } catch (e: IOException) {
                     makeToast(R.string.error_loading_image)
+                } finally {
+                    checkImageStream?.close()
                 }
             }
         }
-    }
-
-    private fun makeToast(@StringRes string: Int) {
-        Toast.makeText(this, getString(string), Toast.LENGTH_SHORT).show()
     }
 
     companion object {
@@ -134,4 +150,3 @@ class ShopActivity : AppCompatActivity() {
     }
 }
 
-data class Product(val name: String, val price: Int, val image: Bitmap)
