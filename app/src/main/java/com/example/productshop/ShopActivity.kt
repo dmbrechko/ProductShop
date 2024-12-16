@@ -64,8 +64,9 @@ class ShopActivity : AppCompatActivity() {
             listLV.setOnItemClickListener { adapterView, view, position, id ->
                 val intent = Intent(this@ShopActivity, DetailsActivity::class.java).apply {
                     putExtra(DetailsActivity.KEY_PRODUCT, adapterView.adapter.getItem(position) as Product)
+                    putExtra(DetailsActivity.KEY_POSITION, position)
                 }
-                startActivity(intent)
+                startActivityForResult(intent, REQUEST_CODE_SAVE)
             }
             avatarIV.setOnClickListener {
                 val intent = Intent(Intent.ACTION_PICK).apply { type = "image/*" }
@@ -142,11 +143,20 @@ class ShopActivity : AppCompatActivity() {
                     checkImageStream?.close()
                 }
             }
+            REQUEST_CODE_SAVE -> if (resultCode == RESULT_OK) {
+                val product = data?.getParcelableCompat<Product>(KEY_SAVED_PRODUCT) ?: throw IllegalStateException("Product not send back")
+                val position = data.getIntExtra(KEY_SAVED_POSITION, 0)
+                products[position] = product
+                adapter.notifyDataSetChanged()
+            }
         }
     }
 
     companion object {
         const val REQUEST_CODE_GALLERY = 31 * 17
+        const val REQUEST_CODE_SAVE = 13 * 17
+        const val KEY_SAVED_PRODUCT = "key saved person"
+        const val KEY_SAVED_POSITION = "key saved position"
     }
 }
 

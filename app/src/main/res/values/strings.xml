@@ -14,4 +14,6 @@
     <string name="exit">Exit</string>
     <string name="description">Description</string>
     <string name="description_is_required">Description is required</string>
+    <string name="fill_all_fields">Fill all fields</string>
+    <string name="product_details">Product details</string>
 </resources>

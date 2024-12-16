@@ -14,7 +14,7 @@
         android:layout_height="?attr/actionBarSize"
         app:titleTextColor="?attr/colorOnPrimary"
         android:background="?attr/colorPrimary"
-        app:title="@string/product_shop"
+        app:title="@string/product_details"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -33,7 +33,8 @@
         android:ems="10"
         android:hint="@string/enter_name"
         android:inputType="text"
-        android:layout_marginHorizontal="@dimen/margin" />
+        android:layout_marginHorizontal="@dimen/margin"
+        android:layout_marginTop="@dimen/margin"/>
 
     <EditText
         android:id="@+id/priceET"
@@ -54,5 +55,11 @@
         android:inputType="text"
         android:layout_marginTop="@dimen/margin"
         android:layout_marginHorizontal="@dimen/margin" />
+    <Button
+        android:id="@+id/saveBTN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:layout_marginTop="@dimen/margin"/>
 
 </LinearLayout>
